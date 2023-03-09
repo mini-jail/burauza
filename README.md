@@ -1,0 +1,2 @@
+# burauza
+*booru browser
