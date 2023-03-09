@@ -1,4 +1,4 @@
-import { effect, on, scoped, signal } from "./deps.ts"
+import { computed, effect, on, scoped, signal } from "./deps.ts"
 import { Booru, first, useBooru } from "./components/use-booru.ts"
 import { useTitle } from "./components/use-title.ts"
 
@@ -8,24 +8,29 @@ const getHash = () => {
   return hash
 }
 
-export default scoped(() => {
-  const params = new URLSearchParams(atob(getHash()))
-  const initUrl = params.has("url") ? params.get("url")! : first()?.url!
-  const initPage = params.has("page") ? ~~params.get("page")! : 1
-  const initLimit = params.has("limit") ? ~~params.get("limit")! : 40
-  const initSearch = params.has("search") ? params.get("search")! : ""
-  const initTags = params.has("tags")
-    ? params.get("tags")!.split(",").filter((tag) => tag)
-    : []
+const getParams = () => {
+  const params = new URLSearchParams(getHash())
+  return {
+    url: params.has("url") ? params.get("url")! : first()?.url!,
+    page: params.has("page") ? ~~params.get("page")! : 1,
+    limit: params.has("limit") ? ~~params.get("limit")! : 40,
+    search: params.has("search") ? params.get("search")! : "",
+    tags: params.has("tags")
+      ? params.get("tags")!.split(",").filter((tag) => tag)
+      : [],
+  }
+}
 
-  const url = signal<string>(initUrl)
-  const limit = signal<number>(initLimit)
+export default scoped(() => {
+  const init = getParams()
+  const url = signal<string>(init.url)
+  const limit = signal<number>(init.limit)
   const loaded = signal(0)
   const size = signal(Infinity)
-  const search = signal<string>(initSearch)
+  const search = signal<string>(init.search)
   const highlighted = signal<string[]>([])
-  const tags = signal<string[]>(initTags)
-  const page = signal(initPage)
+  const tags = signal<string[]>(init.tags)
+  const page = signal(init.page)
   const select = signal<Booru>()
   const posts = useBooru(() => {
     return {
@@ -56,6 +61,14 @@ export default scoped(() => {
     url()
     tags()
   }
+  const onPopState = () => {
+    const params = getParams()
+    url(params.url)
+    page(params.page)
+    limit(params.limit)
+    search(params.search)
+    tags(params.tags)
+  }
 
   effect(
     on(search, (current: string | undefined) => {
@@ -66,7 +79,7 @@ export default scoped(() => {
       }
       return search()
     }),
-    initSearch,
+    init.search,
   )
 
   useTitle(() => {
@@ -82,25 +95,26 @@ export default scoped(() => {
     loaded(0)
   }))
 
-  effect(
-    on(pageResetTrigger, (init) => {
-      if (init === false) page(1)
-      return false
+  effect<string, string>(
+    on(pageResetTrigger, (current) => {
+      const next = `${url()}${tags().join()}`
+      if (current !== next) page(1)
+      return next
     }),
-    true,
+    `${url()}${tags().join()}`,
   )
 
-  let paramsId: number
-  effect(() => {
-    const params = new URLSearchParams()
-    if (page()) params.set("page", page().toString())
-    if (limit()) params.set("limit", limit().toString())
-    if (tags().length) params.set("tags", tags().join(","))
-    if (search()) params.set("search", search())
-    if (url()) params.set("url", url())
-    clearTimeout(paramsId)
-    paramsId = setTimeout(() => location.hash = btoa(params.toString()), 500)
-  })
+  effect<URLSearchParams, URLSearchParams>((params) => {
+    params.set("page", page().toString())
+    params.set("limit", limit().toString())
+    params.set("tags", tags().join(","))
+    params.set("search", search())
+    params.set("url", url())
+    location.hash = params.toString()
+    return params
+  }, new URLSearchParams(getHash()))
+
+  addEventListener("popstate", onPopState)
 
   return {
     highlighted,

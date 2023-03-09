@@ -94,18 +94,15 @@ export function useBooru(config: () => Config) {
         const json: BooruResponse = await response.json()
         for (const post of (Array.isArray(json) ? json : json.post) || []) {
           if (post.id === undefined) {
-            console.log("post id missing", post)
             continue
           }
           if (post.file_url === undefined) {
-            console.log("post file_url missing", post)
             continue
           }
           if (
             post.preview_url === undefined &&
             post.preview_file_url === undefined
           ) {
-            console.log("post preview_url missing", post)
             continue
           }
           items.push(normalizePost(post))
