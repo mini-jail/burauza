@@ -1,95 +1,103 @@
 import {
   addElement,
   component,
+  computed,
   effect,
   onCleanup,
   signal,
   view,
-} from "../deps.ts"
-import Booru from "../context.ts"
-
-const PreviewTopBar = component(() => {
-  const { select } = Booru
-
-  addElement("div", (attr) => {
-    attr.class = "top z-index-1"
-    addElement("div", (attr) => {
-      attr.class = "title"
-      attr.textContent = () => String(select()?.fileUrl)
-    })
-
-    addElement("button", (attr) => {
-      attr.type = "button"
-      attr.class = "icon close"
-      attr.onClick = () => select(undefined)
-    })
-  })
-})
-
-const Tags = component(() => {
-  const { select, hasTag, addTag } = Booru
-
-  addElement("div", (attr) => {
-    attr.class = "preview-tags"
-    view(() => {
-      const post = select()
-      if (post == undefined) return
-      for (const tag of post.tags) {
-        addElement("span", (attr) => {
-          attr.class = "tag"
-          attr.textContent = tag
-          attr.state = () => hasTag(tag) ? "active" : ""
-          attr.onClick = () => addTag(tag)
-        })
-      }
-    })
-  })
-})
+} from "../deps.ts";
+import Booru from "../context.ts";
+import Window from "./window.ts";
+import Tag from "./tag.ts";
+import { load } from "./loading.ts";
 
 export const Preview = component(() => {
-  const { select, size, loaded } = Booru
-  const source = signal<string>("")
-  const ready = signal(false)
+  const { select, posts } = Booru;
+  const source = signal<string>("");
+  const show = signal(false);
 
   effect(() => {
-    const item = select()
-    source(item?.fileUrl)
-    onCleanup(() => ready(false))
-  })
+    const item = select();
+    source(item?.fileUrl);
+    onCleanup(() => show(false));
+  });
 
-  addElement("div", (attr) => {
-    attr.class = "loading"
-    attr.ready = () => size() <= loaded()
-    attr.textContent = () => {
-      const value = String(Math.floor((loaded() / size()) * 100))
-      if (value === "NaN") return "Loading... 0%"
-      return "Loading... " + value + "%"
-    }
-  })
+  const onKeyUp = (ev: KeyboardEvent) => {
+    if (ev.key === "ArrowRight") showNext();
+    else if (ev.key === "ArrowLeft") showPrevious();
+  };
 
-  addElement("div", (attr) => {
-    attr.class = "preview"
-    attr.active = () => ready() && select() !== undefined
-    PreviewTopBar()
+  const showPrevious = () => {
+    const index = posts().indexOf(select()!);
+    const prev = (index - 1) === -1 ? posts().length - 1 : index - 1;
+    select(posts()[prev]);
+  };
 
-    addElement("div", (attr) => {
-      attr.class = "preview-content"
+  const showNext = () => {
+    const index = posts().indexOf(select()!);
+    const next = (index + 1) === posts().length ? 0 : index + 1;
+    select(posts()[next]);
+  };
 
-      view(() => {
-        if (source() === undefined) return
-        if (select() === undefined) return
-        addElement("img", (attr) => {
-          attr.src = source()
-          attr.alt = select()!.fileUrl
-          attr.onLoad = () => ready(true)
-          attr.onError = () => source(select()!.previewUrl)
-          attr.onClick = () => open(select()!.fileUrl, "_blank")
-        })
-      })
+  Window({
+    title: () => String(select()?.fileUrl),
+    show: show,
+    width: "100vw",
+    onOpen: () => addEventListener("keyup", onKeyUp),
+    onClose: () => removeEventListener("keyup", onKeyUp),
+    titleChildren() {
+      addElement("button", (attr) => {
+        attr.class = "icon left";
+        attr.onClick = showPrevious;
+      });
+      addElement("button", (attr) => {
+        attr.class = "icon right";
+        attr.onClick = showNext;
+      });
+      addElement("button", (attr) => {
+        attr.class = "icon curly-arrow";
+        attr.title = "open file in new tab";
+        attr.onClick = () => open(select()!.fileUrl, "_blank");
+      });
+    },
+    children() {
+      addElement("div", (attr) => {
+        attr.style = `
+          display: flex;
+          gap: 10px;
+          align-items: flex-start;
+        `;
+        view(() => {
+          const post = select();
+          if (post === undefined) return;
+          if (source() === undefined) return;
+          load({ on: show, text: () => `loading ${post.id}` });
 
-      Tags()
-    })
-  })
-})
+          addElement("img", (attr) => {
+            attr.style = `
+              object-fit: contain;
+              flex: 1;
+              width: 500px;
+              min-width: 500px;
+            `;
+            attr.src = source();
+            attr.alt = post.fileUrl || "";
+            attr.onLoad = () => show(true);
+            attr.onError = () => source(post.previewUrl);
+          });
+          addElement("div", (attr) => {
+            attr.style = `
+              display: flex;
+              gap: 5px;
+              flex-wrap: wrap;
+            }`;
+            for (const tag of post.tags) Tag(tag);
+          });
+        });
+      });
+    },
+  });
+});
 
-export default Preview
+export default Preview;

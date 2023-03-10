@@ -1,19 +1,16 @@
-import { effect, signal } from "../deps.ts"
+import { effect, on, signal } from "../deps.ts";
 
-export function useWiki(query: () => string | undefined) {
-  const cache = new Map<string, string | undefined>()
-  const wiki = signal<string>()
-  effect(async () => {
-    const title = query()
-    if (title) {
-      if (cache.has(title)) return wiki(cache.get(title))
-      const response = await fetch(`/api/wiki/${title}`)
-      if (response.status === 200) {
-        cache.set(title, await response.text())
-        return wiki(cache.get(title))
-      }
-    }
-    wiki(undefined)
-  })
-  return wiki
+const cache = new Map<string, string>();
+
+export function useWiki(id: string, trigger: () => boolean) {
+  const wiki = signal<string>(id);
+  effect(on(trigger, () => {
+    if (trigger() === false) return wiki(id);
+    if (cache.has(id)) return wiki(cache.get(id));
+    fetch(`https://danbooru.donmai.us/wiki_pages/${id}.json`)
+      .then(async (res) => {
+        cache.set(id, res.ok ? (await res.json()).body : id);
+      });
+  }));
+  return wiki;
 }

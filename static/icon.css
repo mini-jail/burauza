@@ -1,0 +1,73 @@
+.icon {
+  background-repeat: no-repeat;
+  background-size: 24px;
+  background-position: center center;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  image-rendering: optimizequality;
+}
+
+.icon.source {
+  background-image: url(./icons/icons8-link-50.png);
+}
+
+.icon.sourcecode {
+  background-image: url(./icons/icons8-quellcode-50.png);
+}
+
+.icon.delete {
+  background-image: url(./icons/icons8-delete-50.png);
+}
+
+.icon.check {
+  background-image: url(./icons/icons8-check-50.png);
+}
+
+.icon.plus {
+  background-image: url(./icons/icons8-plus-mathe-50.png);
+}
+
+.icon.import {
+  background-image: url(./icons/icons8-importieren-50.png);
+}
+
+.icon.close {
+  background-image: url(./icons/icons8-stornieren-50.png);
+}
+
+.icon.download {
+  background-image: url(./icons/icons8-herunterladen-50.png);
+}
+
+.icon.download-json {
+  background-image: url(./icons/icons8-json-download-50.png);
+}
+
+.icon.external-link {
+  background-image: url(./icons/icons8-external-link-50.png);
+}
+
+.icon.search {
+  background-image: url(./icons/icons8-search-50.png);
+}
+
+.icon.left {
+  background-image: url(./icons/icons8-left-50.png);
+}
+
+.icon.right {
+  background-image: url(./icons/icons8-right-50.png);
+}
+
+.icon.curly-arrow {
+  background-image: url(./icons/icons8-curly-arrow-50.png);
+}
+
+.icon.enlarge {
+  background-image: url(./icons/icons8-enlarge-50.png);
+}
+
+.icon.compress {
+  background-image: url(./icons/icons8-compress-50.png);
+}
