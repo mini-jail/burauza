@@ -57,10 +57,7 @@ export default scoped(() => {
   const delTag = (tag: string) => tags(tags().filter(($) => $ !== tag))
   const toggleTag = (tag: string) => hasTag(tag) ? delTag(tag) : addTag(tag)
   const hasTag = (tag: string) => tags().includes(tag)
-  const pageResetTrigger = () => {
-    url()
-    tags()
-  }
+  const pageResetTrigger = () => (url(), tags(), undefined)
   const onPopState = () => {
     const params = getParams()
     url(params.url)
@@ -105,10 +102,13 @@ export default scoped(() => {
   )
 
   effect<URLSearchParams, URLSearchParams>((params) => {
-    params.set("page", page().toString())
+    if (page() > 1) params.set("page", page().toString())
+    else params.delete("page")
     params.set("limit", limit().toString())
-    params.set("tags", tags().join(","))
-    params.set("search", search())
+    if (tags().length) params.set("tags", tags().join(","))
+    else params.delete("tags")
+    if (search().length) params.set("search", search())
+    else params.delete("search")
     params.set("url", url())
     location.hash = params.toString()
     return params
