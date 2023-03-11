@@ -1,7 +1,6 @@
 import {
   addElement,
   component,
-  computed,
   effect,
   onCleanup,
   signal,
@@ -12,14 +11,29 @@ import Window from "./window.ts";
 import Tag from "./tag.ts";
 import { load } from "./loading.ts";
 
+const imageExtensions: string[] = [
+  "jpg",
+  "jpeg",
+  "bmp",
+  "png",
+  "gif",
+];
+
+const getExtension = (filename: string) => {
+  return filename.split(".").at(-1);
+};
+
+const isImage = (filename: string) => {
+  const ext = getExtension(filename);
+  if (ext === undefined) return false;
+  return imageExtensions.includes(ext);
+};
+
 export const Preview = component(() => {
   const { select, posts } = Booru;
-  const source = signal<string>("");
   const show = signal(false);
 
   effect(() => {
-    const item = select();
-    source(item?.fileUrl);
     onCleanup(() => show(false));
   });
 
@@ -63,28 +77,22 @@ export const Preview = component(() => {
     },
     children() {
       addElement("div", (attr) => {
-        attr.style = `
-          display: flex;
-          gap: 10px;
-          align-items: flex-start;
-        `;
+        attr.class = "preview";
         view(() => {
           const post = select();
           if (post === undefined) return;
-          if (source() === undefined) return;
-          load({ on: show, text: () => `loading ${post.id}` });
+          load({ on: show, text: () => `loading "${post.id}"` });
 
           addElement("img", (attr) => {
-            attr.style = `
-              object-fit: contain;
-              flex: 1;
-              width: 500px;
-              min-width: 500px;
-            `;
-            attr.src = source();
-            attr.alt = post.fileUrl || "";
+            attr.class = "preview-img";
+            attr.src = isImage(post.fileUrl) ? post.fileUrl : post.previewUrl;
+            attr.alt = post.fileUrl;
             attr.onLoad = () => show(true);
-            attr.onError = () => source(post.previewUrl);
+            attr.onError = (ev) => {
+              if (ev.currentTarget.src === post.fileUrl) {
+                ev.currentTarget.src = post.previewUrl;
+              }
+            };
           });
           addElement("div", (attr) => {
             attr.style = `
