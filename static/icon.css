@@ -71,3 +71,11 @@
 .icon.compress {
   background-image: url(./icons/icons8-compress-50.png);
 }
+
+.icon.heart {
+  background-image: url(./icons/icons8-heart-50.png);
+}
+
+.icon.heart-filled {
+  background-image: url(./icons/icons8-heart-filled-50.png);
+}

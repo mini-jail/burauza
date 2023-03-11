@@ -59,6 +59,7 @@ export type Booru = {
   tags: string[];
   fileUrl: string;
   previewUrl: string;
+  source: string;
 };
 
 type BooruResponse = BooruPost[] | { post: BooruPost[] };
@@ -105,7 +106,7 @@ export function useBooru(config: () => Config) {
           ) {
             continue;
           }
-          items.push(normalizePost(post));
+          items.push(normalizePost(url, post));
         }
       }
     }
@@ -114,12 +115,13 @@ export function useBooru(config: () => Config) {
   return posts;
 }
 
-function normalizePost(post: BooruPost): Booru {
+function normalizePost(url: string, post: BooruPost): Booru {
   const item: Booru = {
     id: post.id,
     fileUrl: post.file_url,
     previewUrl: post.preview_url || post.preview_file_url,
     tags: [],
+    source: url,
   };
 
   if ((post.tags || post.tag_string)) {
