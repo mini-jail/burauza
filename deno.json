@@ -10,6 +10,8 @@
     "lib": ["DOM", "ESNext", "deno.ns"]
   },
   "tasks": {
-    "dev": "deno run -A --watch=./src/app.ts ./mod.ts dev"
+    "dev": "deno run -A --watch=./src/app.ts ./dev.ts dev",
+    "prod": "deno run -A ./dev.ts prod",
+    "serve": "deno run -A ./mod.ts"
   }
 }
