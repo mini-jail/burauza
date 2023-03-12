@@ -30,8 +30,11 @@ go find yourself some pictures at [burauza.deno.dev](https://burauza.deno.dev/).
 ![screenshot-source-editor](./static/screen-source-editor.png)
 
 ## recordings
-### show wiki
-![record-wiki](./static/record-wiki.gif)
+### responsive
+![record-responsive](./static/record-responsive.gif)
+
+### responsive fullscreen
+![record-responsive-fullscreen](./static/record-responsive-fullscreen.gif)
 
 ### min/ max window
 ![record-min-max](./static/record-min-max.gif)
