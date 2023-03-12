@@ -11,7 +11,7 @@ type WindowProps = {
   onClose?: () => void;
 };
 
-function Window(props: WindowProps): WindowProps {
+function Window(props: WindowProps) {
   const show = signal(false);
   const fullscreen = signal(false);
   effect(() => show(props.show()));
@@ -59,8 +59,6 @@ function Window(props: WindowProps): WindowProps {
       });
     });
   });
-
-  return props;
 }
 
 export default component(Window);

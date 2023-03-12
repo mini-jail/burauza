@@ -10,7 +10,7 @@ const App = component(() => {
   Preview();
 });
 
-const _cleanup = render(document.body, () => {
+render(document.body, () => {
   useLoading();
   App();
 });

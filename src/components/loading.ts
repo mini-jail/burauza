@@ -11,16 +11,7 @@ export function useLoading() {
   let timeoutId: number;
   render(document.body, () => {
     addElement("div", (attr) => {
-      attr.style = {
-        position: "fixed",
-        bottom: "10px",
-        right: "10px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "10px",
-        zIndex: "9999",
-        pointerEvents: "none",
-      };
+      attr.class = "loading-wrapper";
       view(() => {
         for (const props of loads()) {
           addElement("div", (attr) => {

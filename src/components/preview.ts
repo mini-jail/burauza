@@ -57,7 +57,7 @@ export const Preview = component(() => {
   Window({
     title: () => String(select()?.fileUrl),
     show: show,
-    width: "100vw",
+    width: "100%",
     onOpen: () => addEventListener("keyup", onKeyUp),
     onClose: () => removeEventListener("keyup", onKeyUp),
     titleChildren() {
