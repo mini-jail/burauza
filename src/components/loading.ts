@@ -22,7 +22,7 @@ export function useLoading() {
               clearTimeout(timeoutId);
               if (props.on()) {
                 loads().delete(props);
-                timeoutId = setTimeout(() => loads(($) => $!), 2000);
+                timeoutId = setTimeout(() => loads(loads()), 2000);
               }
               return result;
             };
@@ -34,7 +34,5 @@ export function useLoading() {
 }
 
 export function load(props: LoadingProps) {
-  queueMicrotask(() => {
-    loads(loads().add(props));
-  });
+  queueMicrotask(() => loads(loads().add(props)));
 }
