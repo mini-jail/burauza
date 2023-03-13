@@ -331,4 +331,5 @@ nav button.icon.source .sources {
   font-weight: bold;
   box-shadow: 2px 2px 0px #000;
   border: 2px solid black;
+  opacity: 0.5;
 }
