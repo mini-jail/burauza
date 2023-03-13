@@ -115,6 +115,10 @@ nav button.icon.source .sources div[active="true"] {
   background-color: thistle;
 }
 
+nav button.icon.source .sources div:hover {
+  background-color: pink;
+}
+
 nav button.icon.source:hover .sources {
   opacity: 1;
   pointer-events: all;
