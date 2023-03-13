@@ -12,13 +12,12 @@ export const SourceEditor = component((sourceEdit: Signal<boolean>) => {
       addElement("button", (attr) => {
         attr.class = "icon download-json";
         attr.title = "download sources";
-        attr.onClick = () => {
+        attr.onClick = () =>
           download(
             `sources-${Date.now()}.json`,
             "application/json",
             JSON.stringify(localSources(), null, 2),
           );
-        };
       });
     },
     children() {

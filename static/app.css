@@ -40,22 +40,16 @@ nav {
   max-height: calc(100% - 20px);
 }
 
+nav .tag-list {
+  background-color: thistle;
+}
+
 .tag {
-  padding: 5px;
+  padding: 5px 10px;
   cursor: pointer;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  background-color: thistle;
-}
-
-.tag[state="active"] {
-  background-color: plum;
-}
-
-.tag[state="highlight"],
-.tag:hover {
-  background-color: pink;
 }
 
 .nav-top {
@@ -70,6 +64,25 @@ nav .tag-list[show="true"] {
 
 nav button.tags {
   display: none;
+}
+
+.preview .tag-list {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.preview .tag-list .tag {
+  background-color: thistle;
+}
+
+.tag[state="active"] {
+  background-color: plum !important;
+}
+
+.tag[state="highlight"],
+.tag:hover {
+  background-color: pink !important;
 }
 
 input,

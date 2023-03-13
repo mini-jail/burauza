@@ -95,11 +95,7 @@ export const Preview = component(() => {
             };
           });
           addElement("div", (attr) => {
-            attr.style = `
-              display: flex;
-              gap: 5px;
-              flex-wrap: wrap;
-            }`;
+            attr.class = "tag-list";
             for (const tag of post.tags) Tag(tag);
           });
         });
