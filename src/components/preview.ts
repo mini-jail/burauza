@@ -96,7 +96,7 @@ export const Preview = component(() => {
           });
           addElement("div", (attr) => {
             attr.class = "tag-list";
-            for (const tag of post.tags) Tag(tag);
+            for (const tag of post.tags) Tag(tag, post);
           });
         });
       });

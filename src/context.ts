@@ -1,5 +1,5 @@
-import { computed, effect, on, scoped, signal } from "./deps.ts";
-import { Booru, first, useBooru } from "./components/use-booru.ts";
+import { effect, on, scoped, signal } from "./deps.ts";
+import { BooruPost, first, useBooru } from "./components/use-booru.ts";
 import { useTitle } from "./components/use-title.ts";
 
 const getHash = () => {
@@ -31,7 +31,7 @@ export default scoped(() => {
   const highlighted = signal<string[]>([]);
   const tags = signal<string[]>(init.tags);
   const page = signal(init.page);
-  const select = signal<Booru>();
+  const select = signal<BooruPost>();
   const posts = useBooru(() => {
     return {
       url: url(),
@@ -58,7 +58,7 @@ export default scoped(() => {
   const toggleTag = (tag: string) => hasTag(tag) ? delTag(tag) : addTag(tag);
   const hasTag = (tag: string) => tags().includes(tag);
   const pageResetTrigger = () => (url(), tags(), undefined);
-  const onPopState = () => {
+  const onPopState = (ev: PopStateEvent) => {
     const params = getParams();
     url(params.url);
     page(params.page);

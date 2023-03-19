@@ -72,6 +72,10 @@ nav button.tags {
   flex-wrap: wrap;
 }
 
+.tag[artist="true"] {
+  background-color: skyblue !important;
+}
+
 .preview .tag-list .tag {
   background-color: thistle;
 }

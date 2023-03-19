@@ -54,19 +54,24 @@ type Config = {
   tags?: string[];
 };
 
-export type Booru = {
+export type BooruPost = {
   id: number;
+  artist: string | undefined;
   tags: string[];
   fileUrl: string;
   previewUrl: string;
   source: string;
 };
 
-type BooruResponse = BooruPost[] | { post: BooruPost[] };
+type BooruResponse = BooruResponsePost[] | { post: BooruResponsePost[] };
 
-export type BooruPost = {
+type BooruResponsePost = {
   id: number;
   file_url: string;
+  /** yande.re */
+  author: string;
+  /** danbooru.donmai.us only */
+  tag_string_artist: string;
   /** danbooru.donmai.us only */
   tag_string: string;
   /** yande.re */
@@ -78,10 +83,10 @@ export type BooruPost = {
 };
 
 export function useBooru(config: () => Config) {
-  const posts = signal<Booru[]>([]);
+  const posts = signal<BooruPost[]>([]);
   effect(async () => {
     const { page = 1, limit = 40, url, tags } = config();
-    const items: Booru[] = [];
+    const items: BooruPost[] = [];
     const source = find(url)?.url || url;
     if (source) {
       const api = new URL(source);
@@ -115,20 +120,18 @@ export function useBooru(config: () => Config) {
   return posts;
 }
 
-function normalizePost(url: string, post: BooruPost): Booru {
-  const item: Booru = {
+function normalizePost(url: string, post: BooruResponsePost): BooruPost {
+  const item: BooruPost = {
     id: post.id,
     fileUrl: post.file_url,
     previewUrl: post.preview_url || post.preview_file_url,
+    artist: post.tag_string_artist || undefined,
     tags: [],
     source: url,
   };
-
-  if ((post.tags || post.tag_string)) {
-    item.tags = (post.tags || post.tag_string)
-      .split(" ")
-      .filter((value) => value);
+  const tags = post.tags || post.tag_string;
+  if (tags) {
+    item.tags.push(...tags.split(" ").filter((value) => value));
   }
-
   return item;
 }
