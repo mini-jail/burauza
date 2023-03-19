@@ -1,4 +1,4 @@
-import { addElement, render, signal, view } from "../deps.ts";
+import { element, mount, signal } from "../deps.ts";
 
 type LoadingProps = {
   on: () => boolean;
@@ -9,26 +9,24 @@ const loads = signal<Set<LoadingProps>>(new Set());
 
 export function useLoading() {
   let timeoutId: number;
-  render(document.body, () => {
-    addElement("div", (attr) => {
+  mount(document.body, () => {
+    element("div", (attr) => {
       attr.class = "loading-wrapper";
-      view(() => {
-        for (const props of loads()) {
-          addElement("div", (attr) => {
-            attr.class = "loading";
-            attr.textContent = props.text;
-            attr.loading = () => {
-              const result = props.on();
-              clearTimeout(timeoutId);
-              if (props.on()) {
-                loads().delete(props);
-                timeoutId = setTimeout(() => loads(loads()), 2000);
-              }
-              return result;
-            };
-          });
-        }
-      });
+      for (const props of loads()) {
+        element("div", (attr) => {
+          attr.class = "loading";
+          attr.textContent = props.text;
+          attr.loading = () => {
+            const result = props.on();
+            clearTimeout(timeoutId);
+            if (props.on()) {
+              loads().delete(props);
+              timeoutId = setTimeout(() => loads(loads()), 2000);
+            }
+            return result;
+          };
+        });
+      }
     });
   });
 }

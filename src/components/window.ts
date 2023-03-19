@@ -1,4 +1,4 @@
-import { addElement, component, effect, signal, view } from "../deps.ts";
+import { effect, element, signal } from "../deps.ts";
 
 type WindowProps = {
   title: () => string;
@@ -20,30 +20,28 @@ function Window(props: WindowProps) {
     else props.onClose?.();
   });
 
-  addElement("div", (attr) => {
+  element("div", (attr) => {
     attr.show = show;
     attr.class = "window";
     attr.fullscreen = fullscreen;
     attr.style = { width: props.width, height: props.height };
 
-    addElement("div", (attr) => {
+    element("div", (attr) => {
       attr.class = "window-title";
-      addElement("h3", (attr) => {
+      element("h3", (attr) => {
         attr.textContent = props.title;
         attr.title = props.title;
       });
 
-      addElement("div", (attr) => {
+      element("div", (attr) => {
         attr.class = "window-title-children";
-        if (props.titleChildren) {
-          view(props.titleChildren);
-        }
-        addElement("button", (attr) => {
+        props.titleChildren?.();
+        element("button", (attr) => {
           attr.class = () => `icon ${fullscreen() ? "compress" : "enlarge"}`;
           attr.title = () => `${fullscreen() ? "compress" : "enlarge"} window`;
           attr.onClick = () => fullscreen(!fullscreen());
         });
-        addElement("button", (attr) => {
+        element("button", (attr) => {
           attr.class = "icon close";
           attr.title = "close window";
           attr.onClick = () => show(false);
@@ -51,14 +49,14 @@ function Window(props: WindowProps) {
       });
     });
 
-    addElement("div", (attr) => {
+    element("div", (attr) => {
       attr.class = "window-content";
-      addElement("div", (attr) => {
+      element("div", (attr) => {
         attr.class = "window-content-wrapper";
-        view(props.children);
+        props.children?.();
       });
     });
   });
 }
 
-export default component(Window);
+export default Window;

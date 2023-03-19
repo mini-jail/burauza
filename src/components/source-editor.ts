@@ -1,15 +1,15 @@
-import { addElement, component, Signal, signal } from "../deps.ts";
+import { element, Signal, signal } from "../deps.ts";
 import { localSources, Source } from "./use-booru.ts";
 import { uploadFile } from "./upload.ts";
 import { download } from "./download.ts";
 import Window from "./window.ts";
 
-export const SourceEditor = component((sourceEdit: Signal<boolean>) => {
+export function SourceEditor(sourceEdit: Signal<boolean>) {
   Window({
     title: () => "source editor",
     show: sourceEdit,
     titleChildren() {
-      addElement("button", (attr) => {
+      element("button", (attr) => {
         attr.class = "icon download-json";
         attr.title = "download sources";
         attr.onClick = () =>
@@ -27,19 +27,19 @@ export const SourceEditor = component((sourceEdit: Signal<boolean>) => {
       AddSource();
     },
   });
-});
+}
 
-const AddSource = component(() => {
+function AddSource() {
   const name = signal("");
   const url = signal("");
 
-  addElement("div", (attr) => {
+  element("div", (attr) => {
     attr.class = "flex justify-content-space-betwee flex-gap-10";
 
-    addElement("div", (attr) => {
+    element("div", (attr) => {
       attr.class = "flex align-items-baseline width-100";
-      addElement("label", (attr) => attr.textContent = "name:");
-      addElement("input", (attr) => {
+      element("label", (attr) => attr.textContent = "name:");
+      element("input", (attr) => {
         attr.class = "flex-1";
         attr.name = "name";
         attr.value = name;
@@ -48,10 +48,10 @@ const AddSource = component(() => {
       });
     });
 
-    addElement("div", (attr) => {
+    element("div", (attr) => {
       attr.class = "flex align-items-baseline width-100";
-      addElement("label", (attr) => attr.textContent = "url:");
-      addElement("input", (attr) => {
+      element("label", (attr) => attr.textContent = "url:");
+      element("input", (attr) => {
         attr.class = "flex-1";
         attr.name = "url";
         attr.value = url;
@@ -60,9 +60,9 @@ const AddSource = component(() => {
       });
     });
 
-    addElement("div", (attr) => {
+    element("div", (attr) => {
       attr.class = "flex";
-      addElement("button", (attr) => {
+      element("button", (attr) => {
         attr.class = "icon plus";
         attr.title = "add source";
         attr.disabled = () => !name() || !url();
@@ -79,7 +79,7 @@ const AddSource = component(() => {
         };
       });
 
-      addElement("button", (attr) => {
+      element("button", (attr) => {
         attr.class = "icon import";
         attr.title = "import source";
         attr.onClick = async () => {
@@ -98,16 +98,16 @@ const AddSource = component(() => {
       });
     });
   });
-});
+}
 
-const SourceEdit = component((source: Source) => {
-  addElement("div", (attr) => {
+function SourceEdit(source: Source) {
+  element("div", (attr) => {
     attr.class = "flex justify-content-space-between flex-gap-10";
 
-    addElement("div", (attr) => {
+    element("div", (attr) => {
       attr.class = "flex align-items-baseline width-100";
-      addElement("label", (attr) => attr.textContent = "name:");
-      addElement("input", (attr) => {
+      element("label", (attr) => attr.textContent = "name:");
+      element("input", (attr) => {
         attr.class = "flex-1";
         attr.name = "name";
         attr.value = source.name;
@@ -116,10 +116,10 @@ const SourceEdit = component((source: Source) => {
       });
     });
 
-    addElement("div", (attr) => {
+    element("div", (attr) => {
       attr.class = "flex align-items-baseline width-100";
-      addElement("label", (attr) => attr.textContent = "url:");
-      addElement("input", (attr) => {
+      element("label", (attr) => attr.textContent = "url:");
+      element("input", (attr) => {
         attr.class = "flex-1";
         attr.value = source.url;
         attr.placeholder = "https://...";
@@ -127,9 +127,9 @@ const SourceEdit = component((source: Source) => {
       });
     });
 
-    addElement("div", (attr) => {
+    element("div", (attr) => {
       attr.class = "flex";
-      addElement("button", (attr) => {
+      element("button", (attr) => {
         attr.class = "icon check";
         attr.title = "save source";
         attr.onClick = () => {
@@ -142,7 +142,7 @@ const SourceEdit = component((source: Source) => {
         };
       });
 
-      addElement("button", (attr) => {
+      element("button", (attr) => {
         attr.class = "icon delete";
         attr.title = "delete source";
         attr.onClick = () => {
@@ -151,4 +151,4 @@ const SourceEdit = component((source: Source) => {
       });
     });
   });
-});
+}

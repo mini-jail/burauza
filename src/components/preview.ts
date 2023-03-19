@@ -1,11 +1,4 @@
-import {
-  addElement,
-  component,
-  effect,
-  onCleanup,
-  signal,
-  view,
-} from "../deps.ts";
+import { effect, element, onCleanup, signal } from "../deps.ts";
 import Booru from "../context.ts";
 import Window from "./window.ts";
 import Tag from "./tag.ts";
@@ -29,7 +22,7 @@ const isImage = (filename: string) => {
   return imageExtensions.includes(ext);
 };
 
-export const Preview = component(() => {
+export default function Preview() {
   const { select, posts } = Booru;
   const show = signal(false);
 
@@ -61,47 +54,43 @@ export const Preview = component(() => {
     onOpen: () => addEventListener("keyup", onKeyUp),
     onClose: () => removeEventListener("keyup", onKeyUp),
     titleChildren() {
-      addElement("button", (attr) => {
-        attr.class = "icon left";
-        attr.onClick = showPrevious;
+      element("button", {
+        class: "icon left",
+        onClick: showPrevious,
       });
-      addElement("button", (attr) => {
-        attr.class = "icon right";
-        attr.onClick = showNext;
+      element("button", {
+        class: "icon right",
+        onClick: showNext,
       });
-      addElement("button", (attr) => {
-        attr.class = "icon curly-arrow";
-        attr.title = "open file in new tab";
-        attr.onClick = () => open(select()!.fileUrl, "_blank");
+      element("button", {
+        class: "icon curly-arrow",
+        title: "open file in new tab",
+        onClick: () => open(select()!.fileUrl, "_blank"),
       });
     },
     children() {
-      addElement("div", (attr) => {
+      element("div", (attr) => {
         attr.class = "preview";
-        view(() => {
-          const post = select();
-          if (post === undefined) return;
-          load({ on: show, text: () => `loading "${post.id}"` });
+        const post = select();
+        if (post === undefined) return;
+        load({ on: show, text: () => `loading "${post.id}"` });
+        element("img", {
+          class: "preview-img",
+          src: isImage(post.fileUrl) ? post.fileUrl : post.previewUrl,
+          alt: post.fileUrl,
+          onLoad: () => show(true),
+          onError: (ev) => {
+            if (ev.currentTarget.src === post.fileUrl) {
+              ev.currentTarget.src = post.previewUrl;
+            }
+          },
+        });
 
-          addElement("img", (attr) => {
-            attr.class = "preview-img";
-            attr.src = isImage(post.fileUrl) ? post.fileUrl : post.previewUrl;
-            attr.alt = post.fileUrl;
-            attr.onLoad = () => show(true);
-            attr.onError = (ev) => {
-              if (ev.currentTarget.src === post.fileUrl) {
-                ev.currentTarget.src = post.previewUrl;
-              }
-            };
-          });
-          addElement("div", (attr) => {
-            attr.class = "tag-list";
-            for (const tag of post.tags) Tag(tag, post);
-          });
+        element("div", (attr) => {
+          attr.class = "tag-list";
+          for (const tag of post.tags) Tag(tag, post);
         });
       });
     },
   });
-});
-
-export default Preview;
+}
