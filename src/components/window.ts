@@ -11,7 +11,7 @@ type WindowProps = {
   onClose?: () => void;
 };
 
-function Window(props: WindowProps) {
+export default function Window(props: WindowProps) {
   const show = signal(false);
   const fullscreen = signal(false);
   effect(() => show(props.show()));
@@ -20,43 +20,40 @@ function Window(props: WindowProps) {
     else props.onClose?.();
   });
 
-  element("div", (attr) => {
-    attr.show = show;
-    attr.class = "window";
-    attr.fullscreen = fullscreen;
-    attr.style = { width: props.width, height: props.height };
+  element("div", (div) => {
+    div.show = show;
+    div.class = "window";
+    div.fullscreen = fullscreen;
+    div.style = { width: props.width, height: props.height };
 
-    element("div", (attr) => {
-      attr.class = "window-title";
-      element("h3", (attr) => {
-        attr.textContent = props.title;
-        attr.title = props.title;
-      });
+    element("div", (div) => {
+      div.class = "window-title";
+      element("h3", { title: props.title, textContent: props.title });
 
-      element("div", (attr) => {
-        attr.class = "window-title-children";
+      element("div", (div) => {
+        div.class = "window-title-children";
         props.titleChildren?.();
-        element("button", (attr) => {
-          attr.class = () => `icon ${fullscreen() ? "compress" : "enlarge"}`;
-          attr.title = () => `${fullscreen() ? "compress" : "enlarge"} window`;
-          attr.onClick = () => fullscreen(!fullscreen());
+        element("button", {
+          type: "button",
+          class: () => `icon ${fullscreen() ? "compress" : "enlarge"}`,
+          title: () => `${fullscreen() ? "compress" : "enlarge"} window`,
+          onClick: () => fullscreen(!fullscreen()),
         });
-        element("button", (attr) => {
-          attr.class = "icon close";
-          attr.title = "close window";
-          attr.onClick = () => show(false);
+        element("button", {
+          class: "icon close",
+          type: "button",
+          title: "close window",
+          onClick: () => show(false),
         });
       });
     });
 
-    element("div", (attr) => {
-      attr.class = "window-content";
-      element("div", (attr) => {
-        attr.class = "window-content-wrapper";
+    element("div", (div) => {
+      div.class = "window-content";
+      element("div", (div) => {
+        div.class = "window-content-wrapper";
         props.children?.();
       });
     });
   });
 }
-
-export default Window;

@@ -27,25 +27,25 @@ export default function Navigation() {
             attr.class = "icon source z-index-1";
             element("div", (attr) => {
               attr.class = "sources";
-              element("div", (attr) => {
-                attr.title = "open source editor";
-                attr.textContent = "source editor";
-                attr.onClick = () => sourceEdit(!sourceEdit());
+              element("div", {
+                title: "open source editor",
+                textContent: "source editor",
+                onClick: () => sourceEdit(!sourceEdit()),
               });
               for (const source of getSources()) {
-                element("div", (attr) => {
-                  attr.active = () => source.url === url();
-                  attr.textContent = source.name;
-                  attr.onClick = () => url(source.url);
+                element("div", {
+                  active: () => source.url === url(),
+                  textContent: source.name,
+                  onClick: () => url(source.url),
                 });
               }
             });
           });
         }
 
-        element("button", (attr) => {
-          attr.class = "icon tags";
-          attr.onClick = () => showTags(!showTags());
+        element("button", {
+          class: "icon tags",
+          onClick: () => showTags(!showTags()),
         });
 
         element("input", (attr) => {
@@ -62,34 +62,34 @@ export default function Navigation() {
           };
         });
 
-        element("button", (attr) => {
-          attr.title = "browse source";
-          attr.name = "sourcecode";
-          attr.type = "button";
-          attr.class = "icon sourcecode";
-          attr.onClick = () => {
+        element("button", {
+          title: "browse source",
+          name: "sourcecode",
+          type: "button",
+          class: "icon sourcecode",
+          onClick() {
             open("https://github.com/mini-jail/burauza", "_blank");
-          };
+          },
         });
       });
 
       element("div", (attr) => {
         attr.class = "nav-paging";
-        element("button", (attr) => {
-          attr.class = "previous";
-          attr.textContent = () => String(page() - 1);
-          attr.disabled = () => page() <= 1;
-          attr.onClick = () => page(page() - 1);
+        element("button", {
+          class: "previous",
+          textContent: () => String(page() - 1),
+          disabled: () => page() <= 1,
+          onClick: () => page(page() - 1),
         });
-        element("button", (attr) => {
-          attr.class = "current";
-          attr.disabled = true;
-          attr.textContent = () => String(page());
+        element("button", {
+          class: "current",
+          disabled: true,
+          textContent: () => String(page()),
         });
-        element("button", (attr) => {
-          attr.class = "next";
-          attr.textContent = () => String(page() + 1);
-          attr.onClick = () => page(page() + 1);
+        element("button", {
+          class: "next",
+          textContent: () => String(page() + 1),
+          onClick: () => page(page() + 1),
         });
       });
     });

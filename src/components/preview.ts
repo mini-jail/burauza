@@ -26,9 +26,7 @@ export default function Preview() {
   const { select, posts } = Booru;
   const show = signal(false);
 
-  effect(() => {
-    onCleanup(() => show(false));
-  });
+  onCleanup(() => show(false));
 
   const onKeyUp = (ev: KeyboardEvent) => {
     if (ev.key === "ArrowRight") showNext();
@@ -54,14 +52,8 @@ export default function Preview() {
     onOpen: () => addEventListener("keyup", onKeyUp),
     onClose: () => removeEventListener("keyup", onKeyUp),
     titleChildren() {
-      element("button", {
-        class: "icon left",
-        onClick: showPrevious,
-      });
-      element("button", {
-        class: "icon right",
-        onClick: showNext,
-      });
+      element("button", { class: "icon left", onClick: showPrevious });
+      element("button", { class: "icon right", onClick: showNext });
       element("button", {
         class: "icon curly-arrow",
         title: "open file in new tab",

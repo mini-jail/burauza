@@ -13,10 +13,10 @@ export function useLoading() {
     element("div", (attr) => {
       attr.class = "loading-wrapper";
       for (const props of loads()) {
-        element("div", (attr) => {
-          attr.class = "loading";
-          attr.textContent = props.text;
-          attr.loading = () => {
+        element("div", {
+          class: "loading",
+          textContent: props.text,
+          loading: () => {
             const result = props.on();
             clearTimeout(timeoutId);
             if (props.on()) {
@@ -24,7 +24,7 @@ export function useLoading() {
               timeoutId = setTimeout(() => loads(loads()), 2000);
             }
             return result;
-          };
+          },
         });
       }
     });

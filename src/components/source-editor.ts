@@ -9,15 +9,16 @@ export function SourceEditor(sourceEdit: Signal<boolean>) {
     title: () => "source editor",
     show: sourceEdit,
     titleChildren() {
-      element("button", (attr) => {
-        attr.class = "icon download-json";
-        attr.title = "download sources";
-        attr.onClick = () =>
+      element("button", {
+        class: "icon download-json",
+        title: "download sources",
+        onClick() {
           download(
             `sources-${Date.now()}.json`,
             "application/json",
             JSON.stringify(localSources(), null, 2),
           );
+        },
       });
     },
     children() {
@@ -38,25 +39,27 @@ function AddSource() {
 
     element("div", (attr) => {
       attr.class = "flex align-items-baseline width-100";
-      element("label", (attr) => attr.textContent = "name:");
-      element("input", (attr) => {
-        attr.class = "flex-1";
-        attr.name = "name";
-        attr.value = name;
-        attr.onInput = (ev) => name(ev.currentTarget.value);
-        attr.placeholder = "*Booru";
+      element("label", { textContent: "name:" });
+      element("input", {
+        class: "flex-1",
+        name: "name",
+        value: name,
+        onInput(ev) {
+          name(ev.currentTarget.value);
+        },
+        placeholder: "*Booru",
       });
     });
 
     element("div", (attr) => {
       attr.class = "flex align-items-baseline width-100";
-      element("label", (attr) => attr.textContent = "url:");
-      element("input", (attr) => {
-        attr.class = "flex-1";
-        attr.name = "url";
-        attr.value = url;
-        attr.onInput = (ev) => url(ev.currentTarget.value);
-        attr.placeholder = "https://...";
+      element("label", { textContent: "url:" });
+      element("input", {
+        class: "flex-1",
+        name: "url",
+        value: url,
+        onInput: (ev) => url(ev.currentTarget.value),
+        placeholder: "https://...",
       });
     });
 
@@ -79,10 +82,10 @@ function AddSource() {
         };
       });
 
-      element("button", (attr) => {
-        attr.class = "icon import";
-        attr.title = "import source";
-        attr.onClick = async () => {
+      element("button", {
+        class: "icon import",
+        title: "import source",
+        async onClick(ev) {
           const data = await uploadFile(".json", "readAsText");
           const json = JSON.parse(data);
           const importedSources: Source[] = [];
@@ -94,7 +97,7 @@ function AddSource() {
             }
           }
           localSources(localSources().concat(importedSources));
-        };
+        },
       });
     });
   });
@@ -106,48 +109,52 @@ function SourceEdit(source: Source) {
 
     element("div", (attr) => {
       attr.class = "flex align-items-baseline width-100";
-      element("label", (attr) => attr.textContent = "name:");
-      element("input", (attr) => {
-        attr.class = "flex-1";
-        attr.name = "name";
-        attr.value = source.name;
-        attr.placeholder = "*Booru";
-        attr.onInput = (ev) => source.name = ev.currentTarget.value;
+      element("label", { textContent: "name:" });
+      element("input", {
+        class: "flex-1",
+        name: "name",
+        value: source.name,
+        placeholder: "*Booru",
+        onInput(ev) {
+          source.name = ev.currentTarget.value;
+        },
       });
     });
 
     element("div", (attr) => {
       attr.class = "flex align-items-baseline width-100";
-      element("label", (attr) => attr.textContent = "url:");
-      element("input", (attr) => {
-        attr.class = "flex-1";
-        attr.value = source.url;
-        attr.placeholder = "https://...";
-        attr.onInput = (ev) => source.url = ev.currentTarget.value;
+      element("label", { textContent: "url:" });
+      element("input", {
+        class: "flex-1",
+        value: source.url,
+        placeholder: "https://...",
+        onInput(ev) {
+          source.url = ev.currentTarget.value;
+        },
       });
     });
 
     element("div", (attr) => {
       attr.class = "flex";
-      element("button", (attr) => {
-        attr.class = "icon check";
-        attr.title = "save source";
-        attr.onClick = () => {
+      element("button", {
+        class: "icon check",
+        title: "save source",
+        onClick() {
           const newSource = { url: source.url, name: source.name };
           localSources(
             localSources()
               .filter(($) => $ !== source)
               .concat(newSource),
           );
-        };
+        },
       });
 
-      element("button", (attr) => {
-        attr.class = "icon delete";
-        attr.title = "delete source";
-        attr.onClick = () => {
+      element("button", {
+        class: "icon delete",
+        title: "delete source",
+        onClick() {
           localSources(localSources().filter(($) => $ !== source));
-        };
+        },
       });
     });
   });

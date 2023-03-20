@@ -15,9 +15,10 @@ export default function Tag(name: string, post?: BooruPost) {
     onClick: () => toggleTag(name),
     onMouseOver: () => trigger(true),
     onMouseOut: () => trigger(false),
-    state: () => {
+    state() {
       if (tags().includes(name)) return "active";
       else if (highlighted()?.includes(name)) return "highlight";
+      return "inactive";
     },
   });
 }
