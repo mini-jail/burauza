@@ -19,6 +19,12 @@ export default function Window(props: WindowProps) {
     if (show()) props.onOpen?.();
     else props.onClose?.();
   });
+  const toggleFullscreen = () => fullscreen(!fullscreen());
+  const closeWindow = () => show(false);
+  const toggleButtonTitle = () =>
+    `${fullscreen() ? "compress" : "enlarge"} window`;
+  const toggleButtonClass = () =>
+    `icon ${fullscreen() ? "compress" : "enlarge"}`;
 
   element("div", (div) => {
     div.show = show;
@@ -35,15 +41,15 @@ export default function Window(props: WindowProps) {
         props.titleChildren?.();
         element("button", {
           type: "button",
-          class: () => `icon ${fullscreen() ? "compress" : "enlarge"}`,
-          title: () => `${fullscreen() ? "compress" : "enlarge"} window`,
-          onClick: () => fullscreen(!fullscreen()),
+          class: toggleButtonClass,
+          title: toggleButtonTitle,
+          onClick: toggleFullscreen,
         });
         element("button", {
           class: "icon close",
           type: "button",
           title: "close window",
-          onClick: () => show(false),
+          onClick: closeWindow,
         });
       });
     });
