@@ -10,6 +10,7 @@ export default function Navigation() {
   const showTags = signal(false);
   const sourceEdit = signal(false);
   const pervert = usePervert();
+  let inputDebounceId: number;
 
   element("nav", () => {
     SourceEditor(sourceEdit);
@@ -45,21 +46,21 @@ export default function Navigation() {
 
         element("button", {
           class: "icon tags",
+          title: "show tags",
           onClick: () => showTags(!showTags()),
         });
 
-        element("input", (attr) => {
-          attr.class = "flex-1";
-          attr.name = "search";
-          attr.placeholder = "search...";
-          attr.value = search;
-          attr.type = "text";
-          let id: number;
-          attr.onKeyUp = (ev) => {
+        element("input", {
+          class: "flex-1",
+          name: "search",
+          placeholder: "search...",
+          value: search,
+          type: "text",
+          onKeyUp(ev) {
             const value = ev.currentTarget.value;
-            clearTimeout(id);
-            id = setTimeout(() => search(value), 1000);
-          };
+            clearTimeout(inputDebounceId);
+            inputDebounceId = setTimeout(() => search(value), 1000);
+          },
         });
 
         element("button", {
@@ -76,17 +77,20 @@ export default function Navigation() {
       element("div", (attr) => {
         attr.class = "nav-paging";
         element("button", {
+          title: "show previous page",
           class: "previous",
           textContent: () => String(page() - 1),
           disabled: () => page() <= 1,
           onClick: () => page(page() - 1),
         });
         element("button", {
+          title: "current page",
           class: "current",
           disabled: true,
           textContent: () => String(page()),
         });
         element("button", {
+          title: "show next page",
           class: "next",
           textContent: () => String(page() + 1),
           onClick: () => page(page() + 1),

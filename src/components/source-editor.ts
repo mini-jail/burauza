@@ -65,11 +65,11 @@ function AddSource() {
 
     element("div", (attr) => {
       attr.class = "flex";
-      element("button", (attr) => {
-        attr.class = "icon plus";
-        attr.title = "add source";
-        attr.disabled = () => !name() || !url();
-        attr.onClick = () => {
+      element("button", {
+        class: "icon plus",
+        title: "add source",
+        disabled: () => !name() || !url(),
+        onClick() {
           if (!name() || !url()) return;
           localSources(
             localSources().concat({
@@ -79,7 +79,7 @@ function AddSource() {
           );
           url("");
           name("");
-        };
+        },
       });
 
       element("button", {

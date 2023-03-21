@@ -1,4 +1,4 @@
-import { effect, element, signal } from "../deps.ts";
+import { effect, element, on, signal } from "../deps.ts";
 
 type WindowProps = {
   title: () => string;
@@ -14,17 +14,16 @@ type WindowProps = {
 export default function Window(props: WindowProps) {
   const show = signal(false);
   const fullscreen = signal(false);
-  effect(() => show(props.show()));
-  effect(() => {
-    if (show()) props.onOpen?.();
-    else props.onClose?.();
-  });
+
   const toggleFullscreen = () => fullscreen(!fullscreen());
   const closeWindow = () => show(false);
   const toggleButtonTitle = () =>
     `${fullscreen() ? "compress" : "enlarge"} window`;
   const toggleButtonClass = () =>
     `icon ${fullscreen() ? "compress" : "enlarge"}`;
+
+  effect(on(props.show, () => show(props.show())));
+  effect(on(show, () => show() ? props.onOpen?.() : props.onClose?.()));
 
   element("div", (div) => {
     div.show = show;

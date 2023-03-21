@@ -52,11 +52,19 @@ export default function Preview() {
     onOpen: () => addEventListener("keyup", onKeyUp),
     onClose: () => removeEventListener("keyup", onKeyUp),
     titleChildren() {
-      element("button", { class: "icon left", onClick: showPrevious });
-      element("button", { class: "icon right", onClick: showNext });
       element("button", {
-        class: "icon curly-arrow",
+        title: "show previous post",
+        class: "icon left",
+        onClick: showPrevious,
+      });
+      element("button", {
+        title: "show next post",
+        class: "icon right",
+        onClick: showNext,
+      });
+      element("button", {
         title: "open file in new tab",
+        class: "icon curly-arrow",
         onClick: () => open(select()!.fileUrl, "_blank"),
       });
     },
