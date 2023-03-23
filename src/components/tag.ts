@@ -3,22 +3,28 @@ import Booru from "../context.ts";
 import { useWiki } from "./use-wiki.ts";
 import { BooruPost } from "./use-booru.ts";
 
+addEventListener("click", (ev: Record<string, any>) => {
+  const tagName = ev.target?.dataset?.tag;
+  if (tagName) Booru.toggleTag(tagName);
+});
+
+function tagState(this: string) {
+  if (Booru.tags().includes(this)) return "active";
+  else if (Booru.highlighted()?.includes(this)) return "highlight";
+  return "inactive";
+}
+
 export default function Tag(name: string, post?: BooruPost) {
-  const { toggleTag, tags, highlighted } = Booru;
   const trigger = signal<boolean>(false);
   const wiki = useWiki(name, trigger);
   element("div", {
     class: "tag",
     title: wiki,
     textContent: name,
+    dataTag: name,
     artist: post?.artist === name,
-    onClick: () => toggleTag(name),
     onMouseOver: () => trigger(true),
     onMouseOut: () => trigger(false),
-    state() {
-      if (tags().includes(name)) return "active";
-      else if (highlighted()?.includes(name)) return "highlight";
-      return "inactive";
-    },
+    state: tagState.bind(name),
   });
 }

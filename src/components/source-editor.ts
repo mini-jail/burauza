@@ -85,7 +85,7 @@ function AddSource() {
       element("button", {
         class: "icon import",
         title: "import source",
-        async onClick(ev) {
+        async onClick() {
           const data = await uploadFile(".json", "readAsText");
           const json = JSON.parse(data);
           const importedSources: Source[] = [];
