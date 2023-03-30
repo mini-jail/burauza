@@ -20,7 +20,6 @@ export default function Tag(name: string, post?: BooruPost) {
   element("div", {
     class: "tag",
     title: wiki,
-    textContent: name,
     dataTag: name,
     artist: post?.artist === name,
     onMouseOver: () => trigger(true),
