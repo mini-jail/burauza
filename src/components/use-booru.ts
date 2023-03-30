@@ -59,8 +59,9 @@ export type BooruPost = {
   artist: string | undefined;
   tags: string[];
   fileUrl: string;
+  fileExtension: string;
   previewUrl: string;
-  source: string;
+  dimensions: [x: number, y: number];
 };
 
 type BooruResponse = BooruResponsePost[] | { post: BooruResponsePost[] };
@@ -68,8 +69,12 @@ type BooruResponse = BooruResponsePost[] | { post: BooruResponsePost[] };
 type BooruResponsePost = {
   id: number;
   file_url: string;
+  image_width: number;
+  image_height: number;
   /** yande.re */
   author: string;
+  width: number;
+  height: number;
   /** danbooru.donmai.us only */
   tag_string_artist: string;
   /** danbooru.donmai.us only */
@@ -82,6 +87,8 @@ type BooruResponsePost = {
   preview_file_url: string;
 };
 
+const params = new URLSearchParams();
+
 export function useBooru(config: () => Config) {
   const posts = signal<BooruPost[]>([]);
   effect(async () => {
@@ -90,9 +97,9 @@ export function useBooru(config: () => Config) {
     const source = find(url)?.url || url;
     if (source) {
       const api = new URL(source);
-      const params = new URLSearchParams();
       params.set("page", page.toString());
       params.set("limit", limit.toString());
+      params.delete("tags");
       if (tags?.length) params.set("tags", tags.join(" "));
       api.search = params.toString();
       const response = await fetch(api);
@@ -111,7 +118,7 @@ export function useBooru(config: () => Config) {
           ) {
             continue;
           }
-          items.push(normalizePost(url, post));
+          items.push(createPost(post));
         }
       }
     }
@@ -120,18 +127,28 @@ export function useBooru(config: () => Config) {
   return posts;
 }
 
-function normalizePost(url: string, post: BooruResponsePost): BooruPost {
-  const item: BooruPost = {
+function createPost(post: BooruResponsePost): BooruPost {
+  return {
     id: post.id,
     fileUrl: post.file_url,
+    fileExtension: String(post.file_url.split(".").at(-1)),
     previewUrl: post.preview_url || post.preview_file_url,
     artist: post.tag_string_artist || undefined,
-    tags: [],
-    source: url,
+    tags: getPostTags(post),
+    dimensions: getPostDimensions(post),
   };
-  const tags = post.tags || post.tag_string;
-  if (tags) {
-    item.tags.push(...tags.split(" ").filter((value) => value));
+}
+
+function getPostTags(post: BooruResponsePost): string[] {
+  const tags: string[] = [];
+  if (post.tags || post.tag_string) {
+    tags.push(...(post.tags || post.tag_string).split(" "));
   }
-  return item;
+  return tags;
+}
+
+function getPostDimensions(post: BooruResponsePost): [x: number, y: number] {
+  const dimensionX: number = post.image_width || post.width;
+  const dimensionY: number = post.image_height || post.height;
+  return [dimensionX, dimensionY];
 }

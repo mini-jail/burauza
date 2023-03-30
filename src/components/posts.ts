@@ -25,15 +25,21 @@ export default function Posts() {
     onMount(() => ref.scrollTo({ top: 0, behavior: "smooth" }));
 
     for (const post of posts()) {
-      element("article", () => {
+      element("article", (attr) => {
+        attr.dataId = post.id;
+        attr.dataDimensions = post.dimensions.join("x");
+        attr.onClick = () => select(post);
+        attr.onMouseUp = (ev) => {
+          ev.button === 1 && open(post.fileUrl, "_blank");
+        };
+        attr.onMouseOver = () => highlighted(post.tags);
+        attr.onMouseOut = unhighlight;
+
         element("img", {
           src: post.previewUrl,
           alt: post.previewUrl,
-          onClick: () => select(post),
           onLoad: finishLoading,
           onError: finishLoading,
-          onMouseOver: () => highlighted(post.tags),
-          onMouseOut: unhighlight,
         });
       });
     }
