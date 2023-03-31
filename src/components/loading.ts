@@ -17,7 +17,7 @@ export function useLoading() {
           textContent: props.text,
           loading: () => {
             const result = props.on();
-            if (props.on()) {
+            if (result) {
               loads().delete(props);
               loads(loads());
             }

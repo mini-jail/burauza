@@ -1,17 +1,17 @@
 import { element, elementRef, onMount } from "../deps.ts";
-import Booru from "../context.ts";
+import ctx from "../context.ts";
 import { load } from "./loading.ts";
 
 function finishLoading() {
-  Booru.loaded(Booru.loaded() + 1);
+  ctx.loaded(ctx.loaded() + 1);
 }
 
 function unhighlight() {
-  Booru.highlighted(undefined);
+  ctx.highlighted(undefined);
 }
 
 export default function Posts() {
-  const { posts, highlighted, select, loaded, size } = Booru;
+  const { posts, highlighted, select, loaded, size } = ctx;
 
   element("main", (attr) => {
     const ref = elementRef()!;

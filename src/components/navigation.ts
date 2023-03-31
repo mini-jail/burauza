@@ -1,4 +1,4 @@
-import Booru from "../context.ts";
+import ctx from "../context.ts";
 import { element, signal } from "../deps.ts";
 import { getSources } from "./use-booru.ts";
 import { usePervert } from "./use-pervert.ts";
@@ -6,7 +6,7 @@ import { SourceEditor } from "./source-editor.ts";
 import Tag from "./tag.ts";
 
 export default function Navigation() {
-  const { postTags, tags, page, search, url } = Booru;
+  const { postTags, tags, page, search, url } = ctx;
   const showTags = signal(false);
   const sourceEdit = signal(false);
   const pervert = usePervert();
