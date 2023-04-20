@@ -36,18 +36,17 @@ function AddSource() {
 
   element("div", (attr) => {
     attr.class = "flex justify-content-space-betwee flex-gap-10";
-
     element("div", (attr) => {
       attr.class = "flex align-items-baseline width-100";
       element("label", { textContent: "name:" });
       element("input", {
         class: "flex-1",
         name: "name",
+        placeholder: "*Booru",
         value: name,
         onInput(ev) {
           name(ev.currentTarget.value);
         },
-        placeholder: "*Booru",
       });
     });
 

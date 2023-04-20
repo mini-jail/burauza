@@ -2,13 +2,13 @@ import { effect, on, scoped, signal } from "./deps.ts";
 import { BooruPost, first, useBooru } from "./components/use-booru.ts";
 import { useTitle } from "./components/use-title.ts";
 
-const getHash = () => {
+function getHash(): string {
   let hash = location.hash;
   if (hash.startsWith("#")) hash = hash.slice(1);
   return hash;
-};
+}
 
-const getParams = () => {
+function getParams() {
   const params = new URLSearchParams(getHash());
   return {
     url: params.has("url") ? params.get("url")! : first()?.url!,
@@ -19,7 +19,7 @@ const getParams = () => {
       ? params.get("tags")!.split(",").filter((tag) => tag)
       : [],
   };
-};
+}
 
 export default scoped(() => {
   const init = getParams();
