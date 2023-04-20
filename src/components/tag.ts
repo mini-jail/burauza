@@ -19,7 +19,7 @@ export default function Tag(name: string, post?: BooruPost) {
   const wiki = useWiki(name, trigger);
   element("div", {
     class: "tag",
-    title: wiki,
+    dataTag: name,
     artist: post?.artist === name,
     onMouseOver: () => trigger(true),
     onMouseOut: () => trigger(false),
